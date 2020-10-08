@@ -7,7 +7,7 @@ require 'optparse'
 require 'set'
 require 'sqlite3'
 
-usage = """Usage: bibtex-to-sqlite [--style csl-style] file.bib [sql-query]"""
+usage = """Usage: bibtex-to-sqlite [--style=CSL-STYLE] [--separator=SEPARATOR] [--name=DB-NAME] file.bib [sql-query]"""
 options={:style => 'gost-r-7-0-5-2008', :separator => '|'}
 OptionParser.new do |opts|
   opts.banner = usage
