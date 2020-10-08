@@ -4,13 +4,13 @@ in table format.
 
 # Usage
 
-One file, many queries.
+Convert BibTeX to SQLite database.
 ```bash
 bibtex-to-sqlite x.bib | sqlite3 x.sqlite3
 sqlite3 x.sqlite3 'SELECT * FROM bibtex'
 ```
 
-Direct query BibTeX query (slow).
+Direct query BibTeX file (converts to SQLite every time).
 ```bash
 bibtex-to-sqlite x.bib 'SELECT * FROM bibtex'
 ```
