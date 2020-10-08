@@ -1,3 +1,24 @@
 Convert BibTeX files to SQLite databases, run queries on them and produce
 results in CSV.  Especially usefull for reports that require your publications
 in table format.
+
+# Usage
+
+One file, many queries.
+```bash
+bibtex-to-sqlite x.bib | sqlite3 x.sqlite3
+sqlite3 x.sqlite3 'SELECT * FROM bibtex'
+```
+
+Direct query BibTeX query (slow).
+```bash
+bibtex-to-sqlite x.bib 'SELECT * FROM bibtex'
+```
+
+Custom [CSL style](https://github.com/citation-style-language/styles)
+(default is `gost-r-7-0-5-2008`).
+```bash
+bibtex-to-sqlite --style=apa x.bib 'SELECT * FROM bibtex'
+```
+
+To learn all the options, run `bibtex-to-sqlite` without the arguments.
