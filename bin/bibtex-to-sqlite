@@ -1,0 +1,114 @@
+#!/usr/bin/env ruby
+
+require 'bibtex'
+require 'citeproc'
+require 'csl/styles'
+require 'optparse'
+require 'set'
+require 'sqlite3'
+
+usage = """Usage: bibtex-to-sqlite [--style csl-style] file.bib [sql-query]"""
+options={:style => 'gost-r-7-0-5-2008', :separator => '|'}
+OptionParser.new do |opts|
+  opts.banner = usage
+  opts.on("-sSTYLE", "--style=STYLE", "Set bibliography format style") do |s|
+    options[:style] = s
+  end
+  opts.on("-SSEPARATOR", "--separator=SEPARATOR", "Query output separator") do |s|
+    options[:separator] = s
+  end
+  opts.on("-nNAME", "--database-name=NAME", "SQLITE3 database name") do |s|
+    options[:name] = s
+  end
+end.parse!
+
+inputs=ARGV
+if ARGV.length != 1 && ARGV.length != 2
+  puts usage
+  exit 1
+end
+
+bib_file = ARGV[0]
+if not options[:name]
+  options[:name] = File.basename(bib_file, '.bib') + '.sqlite3'
+end
+if ARGV.length == 2
+  query = ARGV[1]
+else
+  query = ''
+end
+bibliography = BibTeX.open(bib_file).convert(:latex)
+bibliography.replace_strings
+cp = CiteProc::Processor.new style: options[:style], format: 'text'
+cp.import bibliography.to_citeproc
+
+fields = Set.new
+bibliography.each do |entry|
+  fields.merge(entry.field_names.map{ |f| f.to_s.downcase })
+end
+fields.add('author')
+fields.add('title')
+fields.add('booktitle')
+fields.add('journal')
+fields.add('doi')
+
+def escape(s)
+  s.gsub(/'/, "''")
+end
+
+sql = []
+sql.push("""
+CREATE TABLE IF NOT EXISTS bibtex (
+key TEXT,
+type TEXT,
+gost TEXT,
+%s
+);""" % fields.map{ |f| "#{f} TEXT" }.sort.join(",\n"))
+
+bibliography.each do |entry|
+  names = entry.field_names
+  tmp = entry[:author].map do |name|
+    name.display_order
+  end
+  entry.delete(:author)
+  entry.add('author', tmp.join(', '))
+  sql.push("""
+INSERT INTO bibtex (
+key,
+type,
+gost,
+%s
+)
+VALUES (
+'%s',
+'%s',
+'%s',
+%s
+);
+""" % [names.map{ |f| f.to_s }.join(",\n"),
+   escape(entry.key),
+   escape(entry.type.to_s.downcase),
+   escape((cp.render :bibliography, id: entry.id)[0]),
+   names.map{ |i| "'" + escape(entry[i].strip) + "'" }.join(",\n")])
+end
+
+if query.strip == ''
+  puts sql.join('')
+else
+  db = SQLite3::Database.new(options[:name])
+  for q in sql
+    db.execute(q)
+  end
+  db.execute(query) do |row|
+    puts row.map{|value|
+      if value
+        value
+      else
+        ''
+      end
+    }.join(options[:separator])
+  end
+  db.close
+end
+
+# vim:filetype=ruby
