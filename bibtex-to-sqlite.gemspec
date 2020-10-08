@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.summary     = 'Convert BibTeX files to SQLite databases'
   s.description = """Convert BibTeX files to SQLite databases,
 run queries on them and produce results in CSV.
-Especially usefull for reports that require your publications
+Especially useful for reports that require your publications
 in table format."""
   s.authors     = ['Ivan Gankevich']
   s.email       = 'i.gankevich@spbu.ru'
