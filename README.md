@@ -15,8 +15,8 @@ Direct query BibTeX file (converts to SQLite every time).
 bibtex-to-sqlite x.bib 'SELECT * FROM bibtex'
 ```
 
-Custom [CSL style](https://github.com/citation-style-language/styles)
-(default is `gost-r-7-0-5-2008`).
+Custom [CSL style](https://github.com/citation-style-language/styles).
+The default is `gost-r-7-0-5-2008` (guess why).
 ```bash
 bibtex-to-sqlite --style=apa x.bib 'SELECT * FROM bibtex'
 ```
