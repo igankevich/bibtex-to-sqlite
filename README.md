@@ -22,3 +22,8 @@ bibtex-to-sqlite --style=apa x.bib 'SELECT * FROM bibtex'
 ```
 
 To learn all the options, run `bibtex-to-sqlite` without the arguments.
+
+# Installation
+
+Use `gem install bibtex-to-sqlite` to install this command as a Ruby gem
+or visit the corresponding [web-page](https://rubygems.org/gems/bibtex-to-sqlite).
