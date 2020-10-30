@@ -57,6 +57,8 @@ def escape(s)
 end
 
 sql = []
+sql = []
+sql.push("DROP TABLE IF EXISTS bibtex")
 sql.push("""
 CREATE TABLE IF NOT EXISTS bibtex (
 key TEXT,

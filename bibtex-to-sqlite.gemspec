@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'bibtex-to-sqlite'
-  s.version     = '0.1.2'
+  s.version     = '0.1.3'
   s.date        = '2020-10-08'
   s.summary     = 'Convert BibTeX files to SQLite databases'
   s.description = """Convert BibTeX files to SQLite databases,
